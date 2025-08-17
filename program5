@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <ctype.h>  
+#include <conio.h> 
+
+#define MAX 100
+
+
+int stack[MAX];
+int top = -1;
+
+void push(int value) {
+    if (top < MAX - 1) {
+        stack[++top] = value;
+    } else {
+        printf("Stack overflow\n");
+    }
+}
+
+int pop() {
+    if (top >= 0) {
+        return stack[top--];
+    } else {
+        printf("Stack underflow\n");
+        return -1;
+    }
+}
+
+
+int evaluatePostfix(char* expression) {
+    int i;
+    for (i = 0; expression[i] != '\0'; i++) {
+        char ch = expression[i];
+        if (isdigit(ch)) {
+           
+            push(ch - '0'); 
+        } else {
+           
+            int operand2 = pop();
+            int operand1 = pop();
+            switch (ch) {
+                case '+': push(operand1 + operand2); break;
+                case '-': push(operand1 - operand2); break;
+                case '*': push(operand1 * operand2); break;
+                case '/': 
+                    if (operand2 != 0) {
+                        push(operand1 / operand2); 
+                    } else {
+                        printf("Error: Division by zero\n");
+                        return -1;
+                    }
+                    break;
+                default: 
+                    printf("Invalid operator: %c\n", ch); 
+                    return -1;
+            }
+        }
+    }
+    
+    return pop();
+}
+
+
+void main() {
+    int result;
+    char postfix[MAX];
+    clrscr();
+
+    printf("Enter a postfix expression: ");
+    scanf("%s", postfix);
+
+    result = evaluatePostfix(postfix);
+    if (result != -1) {
+        printf("Result of postfix evaluation: %d\n", result);
+    }
+    
+    getch();  
+}
