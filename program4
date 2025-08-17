@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <conio.h>
+#include <ctype.h>
+
+char stack[100];
+int top = -1;
+
+void push(char x)
+{
+    if(top == 99)
+    {
+        printf("Stack overflow");
+    }
+    else
+    {
+        stack[++top] = x;
+    }
+}
+
+char pop()
+{
+    if(top == -1)
+    {
+        return '\0';
+    }
+    else
+    {
+        return stack[top--];
+    }
+}
+
+int priority(char x)
+{
+    if(x == '(')
+        return 0;
+    if(x == '+' || x == '-')
+        return 1;
+    if(x == '*' || x == '/')
+        return 2;
+    return 0;
+}
+
+void main()
+{
+    char input[100];
+    char ch;
+    int i;
+    
+    clrscr();
+    printf("Enter the infix expression: ");
+    scanf("%s",input);
+    
+    for(i=0;input[i]!='\0';i++)
+    {
+        if(isalnum(input[i]))
+            printf("%c",input[i]);
+        else if(input[i]=='(')
+            push(input[i]);
+        else if(input[i]==')')
+        {
+            while((ch=pop())!='(')
+                printf("%c",ch);
+        }
+        else
+        {
+            while(priority(stack[top])>=priority(input[i]))
+                printf("%c",pop());
+            push(input[i]);
+        }
+    }
+    
+    while(top!=-1)
+    {
+        printf("%c",pop());
+    }
+    
+    getch();
+}
